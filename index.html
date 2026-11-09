@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Slope | Algebra Study Buddy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#FBF8F3; --card:#FFFFFF; --ink:#2A2620; --muted:#6B6257;
+  --main:#3446A8; --main-dark:#25337D; --soft:#EEF0FA; --accent:#E2A72E;
+  --line:#E8DFCF;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;font-size:16px;line-height:1.5}
+.app{max-width:760px;margin:0 auto;height:100%;display:flex;flex-direction:column;padding:16px}
+header{display:flex;align-items:center;gap:12px;padding:8px 4px 14px}
+header svg{width:52px;height:52px;flex:none}
+header h1{margin:0;font-family:Outfit,Inter,sans-serif;font-size:26px;font-weight:700;color:var(--main-dark);line-height:1.1}
+header p{margin:0;color:var(--muted);font-size:14px}
+.gate{margin:auto 0;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px 24px;text-align:center}
+.gate svg{width:110px;height:110px;animation:bob 3s ease-in-out infinite}
+.gate h2{font-family:Outfit,Inter,sans-serif;font-size:28px;margin:8px 0 6px;color:var(--main-dark)}
+.gate p{margin:0 auto 18px;max-width:420px;color:var(--muted)}
+.gate form{display:flex;gap:8px;max-width:360px;margin:0 auto}
+.gate input{flex:1;min-width:0;font:inherit;padding:12px 14px;border:2px solid var(--line);border-radius:12px;background:#fff}
+.gate input:focus{outline:none;border-color:var(--main)}
+.btn{font:600 16px Inter,sans-serif;border:0;border-radius:12px;padding:12px 18px;background:var(--main);color:#fff;cursor:pointer}
+.btn:hover{background:var(--main-dark)}
+.err{color:#B3261E;min-height:22px;margin-top:10px;font-size:14px}
+.hint{color:var(--muted);font-size:13px;margin-top:6px}
+.chat{display:none;flex:1;min-height:0;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.scroll{flex:1;overflow-y:auto;padding:18px 16px;display:flex;flex-direction:column;gap:14px}
+.row{display:flex;gap:10px;align-items:flex-end}
+.row.you{flex-direction:row-reverse}
+.av{width:34px;height:34px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600}
+.row.you .av{background:var(--ink);color:#fff}
+.av svg{width:34px;height:34px}
+.bub{max-width:82%;padding:11px 14px;border-radius:16px;white-space:pre-wrap;word-wrap:break-word}
+.row.bot .bub{background:var(--soft);border-bottom-left-radius:4px}
+.row.you .bub{background:var(--main);color:#fff;border-bottom-right-radius:4px}
+.think .bub{display:flex;gap:5px;padding:14px 16px}
+.think i{width:8px;height:8px;border-radius:50%;background:var(--main);opacity:.4;animation:blink 1.2s infinite}
+.think i:nth-child(2){animation-delay:.2s}.think i:nth-child(3){animation-delay:.4s}
+.composer{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line);background:#fff}
+.composer textarea{flex:1;font:inherit;resize:none;border:2px solid var(--line);border-radius:12px;padding:10px 12px;max-height:140px}
+.composer textarea:focus{outline:none;border-color:var(--main)}
+.send{width:48px;height:48px;border:0;border-radius:12px;background:var(--main);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.send:disabled{opacity:.5;cursor:default}
+.send svg{width:22px;height:22px}
+.note{font-size:12px;color:var(--muted);text-align:center;padding:0 12px 10px;background:#fff}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes blink{0%,100%{opacity:.3}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.gate svg,.think i{animation:none}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="mascot" viewBox="0 0 64 64"><rect x="6" y="6" width="52" height="52" rx="12" fill="#E6ECFA" stroke="#3446A8" stroke-width="3"/><path d="M14 46 H50 M14 46 V14" stroke="#9AA6D6" stroke-width="2" stroke-linecap="round"/><path d="M16 44 L48 18" stroke="#3446A8" stroke-width="4" stroke-linecap="round"/><circle cx="48" cy="18" r="4" fill="#E2A72E"/><circle cx="26" cy="30" r="3" fill="#2A2620"/><circle cx="38" cy="30" r="3" fill="#2A2620"/><circle cx="27" cy="29" r="1" fill="#fff"/><circle cx="39" cy="29" r="1" fill="#fff"/><path d="M26 38 Q32 43 38 38" fill="none" stroke="#2A2620" stroke-width="2.4" stroke-linecap="round"/></symbol>
+  </defs>
+</svg>
+<div class="app">
+  <header>
+    <svg viewBox="0 0 64 64" aria-hidden="true"><use href="#mascot"/></svg>
+    <div>
+      <h1>Slope</h1>
+      <p>Algebra EOC study buddy</p>
+    </div>
+  </header>
+
+  <section class="gate" id="gate">
+    <svg viewBox="0 0 64 64" role="img" aria-label="Slope, the study buddy"><use href="#mascot"/></svg>
+    <h2>Hi, I'm Slope!</h2>
+    <p>I'll help you think through Algebra and get ready for the Milestones EOC. I won't just hand you answers. We'll figure it out together. Pop in the class word your teacher gave you.</p>
+    <form id="gateForm" autocomplete="off">
+      <label for="pass" style="position:absolute;left:-9999px">Class word</label>
+      <input id="pass" type="text" placeholder="Class word" autocapitalize="off" spellcheck="false">
+      <button class="btn" type="submit">Let's go</button>
+    </form>
+    <div class="err" id="gateErr" role="alert"></div>
+    <div class="hint">No names, no logins. Just Algebra.</div>
+  </section>
+
+  <section class="chat" id="chat" aria-label="Chat with Slope">
+    <div class="scroll" id="scroll" aria-live="polite"></div>
+    <div class="composer">
+      <label for="box" style="position:absolute;left:-9999px">Your message</label>
+      <textarea id="box" rows="1" placeholder="Type a problem or ask about a concept"></textarea>
+      <button class="send" id="send" aria-label="Send">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12l16-8-6 16-3-7-7-1z" fill="currentColor"/></svg>
+      </button>
+    </div>
+    <div class="note">Slope can be wrong. Always double-check with your notes and review packet.</div>
+  </section>
+</div>
+
+<script>
+/* ===== The shared Worker address. Same one Cyto uses. ===== */
+const WORKER_URL = "https://cyto-tutor.arosenbaum.workers.dev";
+const SUBJECT = "alg";
+/* ========================================================== */
+
+const sessionId = "s-" + Math.random().toString(36).slice(2) + Date.now().toString(36);
+let passphrase = "";
+let history = [];
+let busy = false;
+
+const $ = (id) => document.getElementById(id);
+const scroll = $("scroll");
+
+function avatar(who){
+  const d = document.createElement("div"); d.className = "av";
+  if (who === "you") { d.textContent = "You"; }
+  else { d.innerHTML = '<svg viewBox="0 0 64 64" aria-hidden="true"><use href="#mascot"/></svg>'; }
+  return d;
+}
+function addMsg(who, text){
+  const row = document.createElement("div");
+  row.className = "row " + (who === "you" ? "you" : "bot");
+  const bub = document.createElement("div"); bub.className = "bub"; bub.textContent = text;
+  row.appendChild(avatar(who)); row.appendChild(bub);
+  scroll.appendChild(row); scroll.scrollTop = scroll.scrollHeight;
+}
+function addThinking(){
+  const row = document.createElement("div");
+  row.className = "row bot think"; row.id = "thinking";
+  const bub = document.createElement("div"); bub.className = "bub";
+  bub.innerHTML = "<i></i><i></i><i></i>";
+  bub.setAttribute("aria-label", "Slope is thinking");
+  row.appendChild(avatar("bot")); row.appendChild(bub);
+  scroll.appendChild(row); scroll.scrollTop = scroll.scrollHeight;
+}
+function rmThinking(){ const t = $("thinking"); if (t) t.remove(); }
+
+function backToGate(msg){
+  $("chat").style.display = "none";
+  $("gate").style.display = "block";
+  $("gateErr").textContent = msg;
+  history = []; scroll.innerHTML = "";
+}
+
+function openChat(){
+  $("gate").style.display = "none";
+  $("chat").style.display = "flex";
+  addMsg("bot", "Hey! I'm Slope, your Algebra study buddy. Linear functions, systems, quadratics, exponentials, data: bring it on. I won't solve it for you, but I'll walk you through it one step at a time. What are we working on? You can type a problem like 2x + 5 = 17.");
+  $("box").focus();
+}
+
+$("gateForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const v = $("pass").value.trim().toLowerCase();
+  if (!v) { $("gateErr").textContent = "Type the class word first."; return; }
+  passphrase = v;
+  $("gateErr").textContent = "";
+  openChat();
+});
+
+async function send(){
+  const text = $("box").value.trim();
+  if (!text || busy) return;
+  busy = true; $("send").disabled = true;
+  $("box").value = ""; $("box").style.height = "auto";
+  addMsg("you", text);
+  history.push({ role: "user", content: text });
+  addThinking();
+  try {
+    const res = await fetch(WORKER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ subject: SUBJECT, passphrase, sessionId, messages: history }),
+    });
+    const data = await res.json().catch(() => ({}));
+    rmThinking();
+    if (data.error === "wrong_passphrase") {
+      backToGate("That class word didn't work. Check the spelling and try again.");
+    } else if (data.closed || data.capped || data.limited) {
+      history.pop();
+      addMsg("bot", data.message);
+    } else if (data.reply) {
+      history.push({ role: "assistant", content: data.reply });
+      addMsg("bot", data.reply);
+    } else {
+      history.pop();
+      addMsg("bot", data.error || "Something went wrong. Try again in a moment.");
+    }
+  } catch {
+    rmThinking();
+    history.pop();
+    addMsg("bot", "Can't connect right now. If this keeps happening at school, tell your teacher.");
+  }
+  busy = false; $("send").disabled = false; $("box").focus();
+}
+
+$("send").addEventListener("click", send);
+$("box").addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); }
+});
+$("box").addEventListener("input", () => {
+  const b = $("box"); b.style.height = "auto"; b.style.height = Math.min(b.scrollHeight, 140) + "px";
+});
+</script>
+</body>
+</html>
