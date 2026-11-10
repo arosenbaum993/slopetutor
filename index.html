@@ -50,6 +50,13 @@ header p{margin:0;color:var(--muted);font-size:14px}
 .send{width:48px;height:48px;border:0;border-radius:12px;background:var(--main);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .send:disabled{opacity:.5;cursor:default}
 .send svg{width:22px;height:22px}
+.keypad{display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px 0;background:#fff;border-top:1px solid var(--line)}
+.key{min-width:44px;height:40px;padding:0 10px;border:1px solid var(--line);border-radius:10px;background:var(--soft);color:var(--ink);font:600 17px Inter,system-ui,sans-serif;cursor:pointer}
+.key:hover{border-color:var(--main)}
+.key:focus-visible{outline:2px solid var(--main);outline-offset:1px}
+.key small{font-size:11px;font-weight:500;color:var(--muted);margin-left:3px}
+.bub sup{font-size:.75em;line-height:0}
+.composer{border-top:0 !important}
 .note{font-size:12px;color:var(--muted);text-align:center;padding:0 12px 10px;background:#fff}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 @keyframes blink{0%,100%{opacity:.3}50%{opacity:1}}
@@ -86,9 +93,24 @@ header p{margin:0;color:var(--muted);font-size:14px}
 
   <section class="chat" id="chat" aria-label="Chat with Slope">
     <div class="scroll" id="scroll" aria-live="polite"></div>
+    <div class="keypad" role="group" aria-label="Math keypad">
+      <button class="key" type="button" data-ins="²" aria-label="squared">x²</button>
+      <button class="key" type="button" data-ins="³" aria-label="cubed">x³</button>
+      <button class="key" type="button" data-ins="^" aria-label="exponent, then type the power">xⁿ</button>
+      <button class="key" type="button" data-ins="√()" data-back="1" aria-label="square root">√</button>
+      <button class="key" type="button" data-ins="()" data-back="1" aria-label="parentheses">( )</button>
+      <button class="key" type="button" data-ins="/" aria-label="fraction or divide">a/b</button>
+      <button class="key" type="button" data-ins="×" aria-label="times">×</button>
+      <button class="key" type="button" data-ins="÷" aria-label="divide">÷</button>
+      <button class="key" type="button" data-ins="≤" aria-label="less than or equal to">≤</button>
+      <button class="key" type="button" data-ins="≥" aria-label="greater than or equal to">≥</button>
+      <button class="key" type="button" data-ins="≠" aria-label="not equal to">≠</button>
+      <button class="key" type="button" data-ins="±" aria-label="plus or minus">±</button>
+      <button class="key" type="button" data-ins="π" aria-label="pi">π</button>
+    </div>
     <div class="composer">
       <label for="box" style="position:absolute;left:-9999px">Your message</label>
-      <textarea id="box" rows="1" placeholder="Type a problem or ask about a concept"></textarea>
+      <textarea id="box" rows="1" placeholder="Type a problem or a question"></textarea>
       <button class="send" id="send" aria-label="Send">
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12l16-8-6 16-3-7-7-1z" fill="currentColor"/></svg>
       </button>
@@ -120,10 +142,21 @@ function avatar(who){
 function addMsg(who, text){
   const row = document.createElement("div");
   row.className = "row " + (who === "you" ? "you" : "bot");
-  const bub = document.createElement("div"); bub.className = "bub"; bub.textContent = text;
+  const bub = document.createElement("div"); bub.className = "bub";
+  bub.innerHTML = mathHtml(text);
   row.appendChild(avatar(who)); row.appendChild(bub);
   scroll.appendChild(row); scroll.scrollTop = scroll.scrollHeight;
 }
+/* Shows Slope's math nicely: escapes everything first, then raises
+   exponents written with ^ (x^2, 2^x, 3^(x+1), (1.05)^t). */
+function mathHtml(text){
+  const esc = text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  return esc
+    .replace(/\^\(([^()\n]{1,20})\)/g, "<sup>$1</sup>")
+    .replace(/\^(-?[0-9a-zA-Z.]{1,8})/g, "<sup>$1</sup>")
+    .replace(/\*\*([^*\n]{1,80})\*\*/g, "<strong>$1</strong>");
+}
+
 function addThinking(){
   const row = document.createElement("div");
   row.className = "row bot think"; row.id = "thinking";
@@ -145,7 +178,7 @@ function backToGate(msg){
 function openChat(){
   $("gate").style.display = "none";
   $("chat").style.display = "flex";
-  addMsg("bot", "Hey! I'm Slope, your Algebra study buddy. Linear functions, systems, quadratics, exponentials, data: bring it on. I won't solve it for you, but I'll walk you through it one step at a time. What are we working on? You can type a problem like 2x + 5 = 17.");
+  addMsg("bot", "Hi! I'm Slope. Send me a math problem or a question. I won't solve it for you, but we'll work it out together, one small step at a time. Use the math keys for symbols like x² and √.");
   $("box").focus();
 }
 
@@ -193,6 +226,20 @@ async function send(){
   }
   busy = false; $("send").disabled = false; $("box").focus();
 }
+
+document.querySelectorAll(".key").forEach((k) => {
+  k.addEventListener("click", () => {
+    const b = $("box");
+    const ins = k.dataset.ins;
+    const back = Number(k.dataset.back || 0);
+    const s = b.selectionStart ?? b.value.length, e = b.selectionEnd ?? b.value.length;
+    b.value = b.value.slice(0, s) + ins + b.value.slice(e);
+    const pos = s + ins.length - back;
+    b.focus();
+    b.setSelectionRange(pos, pos);
+    b.dispatchEvent(new Event("input"));
+  });
+});
 
 $("send").addEventListener("click", send);
 $("box").addEventListener("keydown", (e) => {
